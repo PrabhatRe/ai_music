@@ -53,3 +53,22 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 Run the embedding generation scripts in server/
 Librosa extracts audio features and stores them in the FAISS .index file inside embeddings/
 
+
+## FastAPI ```/recommend ``` endpoint:
+
+```bash
+GET /recommend/song_1.mp3?top_n=3
+```
+
+
+```json
+{
+  "recommendations": ["song_2.mp3", "song_3.mp3", "song_4.mp3"]
+}
+```
+
+
+## Screenshots
+
+### Jellyfin Music Library
+![Jellyfin Dashboard](images/dashboard.png)
