@@ -42,30 +42,61 @@ ai_music/
 git clone https://github.com/PrabhatRe/ai_music.git
 cd ai_music
 ```
-2. Set up Jellyfin and point it to the music/ folder for streaming.
+2. **Set up Jellyfin and point it to the `music/` folder for streaming.**
+3. **Generate embeddings for your music**
+```python
+python server/embedding.py
+```
+- Scans the `music/` folder.
 
-3. Run the server (FastAPI + Uvicorn example):
+- Uses Librosa to extract audio features for each song.
+
+- Saves the embeddings as `embeddings.npy` inside the `embeddings/` folder.
+
+4. **Build the FAISS index**
+```python
+python server/faiss.py
+```
+
+- Reads embeddings.npy.
+
+- Creates a FAISS index for fast similarity search.
+
+- Saves it as faiss.index in the embeddings/ folder
+
+5. **Run the FastAPI server**
+```python
+uvicorn server/main:app --host 0.0.0.0 --port 8000 --reload
+```
+- Server will be accessible at `http://127.0.0.1:8000`.
+
+- Root endpoint shows server status:
+```ngnix
+GET http://127.0.0.1:8000/
+```
+6. **Use the `/recommend` endpoint**
+- Fetch similar songs by querying:
+```php-template
+GET http://127.0.0.1:8000/recommend?song=<song_name>&top_n=<N>
+```
+- Example
+```ngnix
+GET http://127.0.0.1:8000/recommend?song=song_1.mp3&top_n=5
+```
+- Returns JSON with top similar songs and automatically starts playback of the first recommendation via Jellyfin.
+```json
+{
+  "query": "song_1.mp3",
+  "recommendations": ["song_2.mp3", "song_3.mp3", "song_4.mp3"]
+}
+
+```
+
+7. **Run the server (FastAPI + Uvicorn example):**
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
-4. Generate or update FAISS index:
 
-Run the embedding generation scripts in server/
-Librosa extracts audio features and stores them in the FAISS .index file inside embeddings/
-
-
-## FastAPI ```/recommend ``` endpoint:
-
-```bash
-GET /recommend/song_1.mp3?top_n=3
-```
-
-
-```json
-{
-  "recommendations": ["song_2.mp3", "song_3.mp3", "song_4.mp3"]
-}
-```
 
 
 ## Screenshots
