@@ -1,0 +1,9 @@
+*.mp3
+*.flac
+*.wav
+*.npy
+*.index
+venv/
+__pyache__/
+cache/
+navidrome/data/
